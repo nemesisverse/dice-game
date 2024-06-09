@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 using UnityEngine;
 
 public class Path : MonoBehaviour
@@ -41,6 +42,11 @@ public class Path : MonoBehaviour
                 ChildNodeList.Add(Child);
             }
         }
+    }
+
+    public int RequestPosition(Transform nodeTransform)
+    {
+        return ChildNodeList.IndexOf(nodeTransform);
     }
 
     

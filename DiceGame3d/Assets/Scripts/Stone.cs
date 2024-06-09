@@ -19,9 +19,66 @@ public class Stone : MonoBehaviour
     public bool isOut;
     bool isMoving;
 
-
+    int StartNodeIndex;
     bool hasTurn;
 
     public GameObject Selector;
+
+    int Steps; //dice rolled number
+    int downSteps;
+
+    private void Start()
+    {
+        StartNodeIndex = CommonPath.RequestPosition(StartNode.gameObject.transform);
+        CreateFullRoute();
+    }
+
+    void CreateFullRoute()
+    {
+        for(int i = 0; i< CommonPath.ChildNodeList.Count; i++)
+        {
+            int tempPos = StartNodeIndex + i;
+            tempPos %= CommonPath.ChildNodeList.Count; // this will stop the overflow 1,2,3,0,1,2,3 like this
+
+            FullRoute.Add(CommonPath.ChildNodeList[tempPos].GetComponent<Node>());
+
+        }
+
+        for(int i = 0; i < FinalPath.ChildNodeList.Count; i++)
+        {
+        
+            FullRoute.Add(FinalPath.ChildNodeList[i].GetComponent<Node>());
+        }
+    }
+
+    IEnumerator Move()
+    {
+        if(isMoving)
+        { 
+            yield break;
+        }
+
+        isMoving = true;
+
+        while(Steps > 0)
+        {
+            RoutePosition++;
+
+            Vector3 nextPos = FullRoute[RoutePosition].gameObject.transform.position;
+
+            while(MoveToNextNode(nextPos , 8f))
+            {
+                yield return null;  
+            }
+            yield return new WaitForSeconds(0.1f);
+            Steps--;
+            downSteps++;
+        }
+    }
+
+    bool MoveToNextNode(Vector3 goalpos , float speed)
+    {
+        return goalpos != (transform.position = Vector3.MoveTowards(transform.position , goalpos , speed*Time.deltaTime));
+    }
 
 }
