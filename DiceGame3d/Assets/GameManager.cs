@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
     public int active_player;
     bool switch_player;
 
-
+        
     private void Awake()
     {
         instanse = this;
@@ -84,7 +84,7 @@ public class GameManager : MonoBehaviour
 
     void RollDice()
     {
-        int diceNumber = 6;//Random.Range(1, 7);
+        int diceNumber = 6;// Random.Range(1, 7);
         if(diceNumber == 6)
         {
             CheckStartNode(diceNumber);
@@ -127,6 +127,7 @@ public class GameManager : MonoBehaviour
         if (startNodeFull)
         {
             //Move a stone
+            MoveAStone(diceNumber);
         }
         else
         {
@@ -142,9 +143,58 @@ public class GameManager : MonoBehaviour
 
 
             //Move A Stone
+            MoveAStone(diceNumber);
             
             
         }
+    }
+
+
+    void MoveAStone(int diceNumber)
+    {
+        List<Stone> movableStone = new List<Stone>();
+        List<Stone> moveKickStone = new List<Stone>();
+
+        for(int i = 0; i < playerlist[active_player].mystones.Length; i++)
+        {
+            if(playerlist[active_player].mystones[i].ReturnIsOut())
+            {
+                if (playerlist[active_player].mystones[i].CheckPossibleKick(playerlist[active_player].mystones[i].StoneID,diceNumber))
+                {
+                    moveKickStone.Add(playerlist[active_player].mystones[i]);
+                    continue;
+                }
+
+
+                if (playerlist[active_player].mystones[i].CheckPossibleMove(diceNumber))
+                {
+                    movableStone.Add(playerlist[active_player].mystones[i]);
+                }
+            }
+
+
+        }  
+        
+
+        if(moveKickStone.Count > 0)
+        {
+            int num = Random.Range(0,moveKickStone.Count);
+            moveKickStone[num].StartTheMove(diceNumber);
+            state = states.Waiting;
+            return;
+        }
+
+        if (movableStone.Count > 0)
+        {
+            int num = Random.Range(0, movableStone.Count);
+            movableStone[num].StartTheMove(diceNumber);
+            state = states.Waiting;
+            return;
+        }
+
+        Debug.Log("should switch player");
+        //perform move if possible
+
     }
 
 

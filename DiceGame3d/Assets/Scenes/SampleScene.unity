@@ -8599,7 +8599,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerlist:
   - playername: 
-    mystones: []
+    mystones:
+    - {fileID: 800233279}
+    - {fileID: 1216075532}
+    - {fileID: 1267582130}
+    - {fileID: 658549657}
     hasturn: 0
     playertype: 1
     haswon: 0
